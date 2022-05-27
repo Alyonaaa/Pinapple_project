@@ -1,42 +1,40 @@
-package com.example.pinapple_;
+package com.example.pinapple_.screens.tasks;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.pinapple_.databinding.TaskBinding;
+import com.example.pinapple_.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskAdapterHolder> {
-    List<Task> data;
-    Context context;
+    List<Task> data = new ArrayList<>();
 
-    TaskAdapter(List<Task> data) {
+    public void setData(List<Task> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
-
 
     @NonNull
     @Override
     public TaskAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.task, parent, false);
-        return new TaskAdapterHolder(itemView);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        TaskBinding binding = TaskBinding.inflate(inflater, parent, false);
+        return new TaskAdapterHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskAdapterHolder holder, int position) {
         Task task = data.get(position);
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(holder.parent.getContext(), "CLick", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.binding.taskIsDone.setChecked(task.isDone);
+        holder.binding.taskText.setText(task.text);
+        holder.binding.taskSubject.setText(task.subject);
     }
 
 
@@ -46,11 +44,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskAdapterHol
     }
 
     class TaskAdapterHolder extends RecyclerView.ViewHolder {
+        TaskBinding binding;
         View parent;
 
-        public TaskAdapterHolder(@NonNull View itemView) {
-            super(itemView);
-            parent = itemView;
+        public TaskAdapterHolder(@NonNull TaskBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }
