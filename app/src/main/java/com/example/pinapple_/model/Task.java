@@ -15,7 +15,6 @@ public class Task {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    @NonNull
     public int _id;
 
     @ColumnInfo(name = "date")
@@ -34,7 +33,6 @@ public class Task {
     public int photo;
 
     @ColumnInfo(name = "isDone")
-    @NonNull
     public boolean isDone;
 
     public Task(String date, String subject, String text) {

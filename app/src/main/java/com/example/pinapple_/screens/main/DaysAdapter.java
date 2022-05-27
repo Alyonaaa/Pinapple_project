@@ -21,15 +21,6 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysViewHolder
         notifyDataSetChanged();
     }
 
-//    DaysAdapter() {
-//        data.add("Понедельник");
-//        data.add("Вторник");
-//        data.add("Среда");
-//        data.add("Четверг");
-//        data.add("Пятница");
-//    }
-
-
     @NonNull
     @Override
     public DaysViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

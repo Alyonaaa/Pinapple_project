@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.example.pinapple_.App;
 import com.example.pinapple_.R;
 import com.example.pinapple_.databinding.AddDayBinding;
+import com.example.pinapple_.databinding.FragmentMainBinding;
 import com.example.pinapple_.screens.main.DaysAdapter;
 
 import java.text.SimpleDateFormat;
@@ -32,34 +35,21 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         App app = (App)(getContext().getApplicationContext());
 
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        FragmentMainBinding binding = FragmentMainBinding.inflate(inflater);
 
-        RecyclerView recyclerView = view.findViewById(R.id.day_list);
         DaysAdapter adapter = new DaysAdapter();
         adapter.setData(app.daysService.getDays());
-        recyclerView.setAdapter(adapter);
+        binding.dayList.setAdapter(adapter);
 
         app.daysService.addListener(() -> {
             adapter.notifyDataSetChanged();
         });
 
-        setHasOptionsMenu(true);
-        return view;
-    }
+        binding.addTaskButton.setOnClickListener((v) -> {
+            Navigation.findNavController(v).navigate(MainFragmentDirections.actionMainFragmentToAddTaskFragment(""));
+        });
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.addDayFragment: showDialog();
-        }
-        return true;
-//        return super.onOptionsItemSelected(item);
+        return binding.getRoot();
     }
 
     private void showDialog() {

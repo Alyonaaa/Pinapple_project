@@ -45,24 +45,9 @@ public class TasksFragment extends Fragment {
         });
 //        adapter.setData(app.tasksService.getTasks());
         binding.taskList.setAdapter(adapter);
+        binding.addTaskButton.setOnClickListener((v) -> createTask());
 
-        setHasOptionsMenu(true);
         return binding.getRoot();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.addDayFragment: createTask();
-        }
-        return true;
-//        return super.onOptionsItemSelected(item);
     }
 
     private void createTask() {
