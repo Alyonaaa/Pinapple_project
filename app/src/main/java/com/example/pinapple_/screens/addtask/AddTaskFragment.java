@@ -86,6 +86,53 @@ public class AddTaskFragment extends Fragment {
         list.add(new Subject("Математика"));
         list.add(new Subject("Русский"));
         list.add(new Subject("Физика"));
+        list.add(new Subject("Английский язык"));
+        list.add(new Subject("Французский язык"));
+        list.add(new Subject("Китайский язык"));
+        list.add(new Subject("Алгебра"));
+        list.add(new Subject("Геометрия"));
+        list.add(new Subject("Биология"));
+        list.add(new Subject("История"));
+        list.add(new Subject("Физкультура"));
+        list.add(new Subject("Основы нравственности"));
+        list.add(new Subject("Литература"));
+        list.add(new Subject("ОБЖ"));
+        list.add(new Subject("ОРКСР"));
+        list.add(new Subject("Краеведение"));
+        list.add(new Subject("Информатика"));
+        list.add(new Subject("Химия"));
+        list.add(new Subject("Родной русский язык"));
+        list.add(new Subject("Родная литература"));
+        list.add(new Subject("Музыка"));
+        list.add(new Subject("ИЗО"));
+        list.add(new Subject("Черчение"));
+        list.add(new Subject("Труды"));
+        list.add(new Subject("Технология"));
+        list.add(new Subject("Чтение"));
+        list.add(new Subject("Обществознание"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return list;
     }
