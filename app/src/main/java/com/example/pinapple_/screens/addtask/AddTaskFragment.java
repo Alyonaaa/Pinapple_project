@@ -20,9 +20,11 @@ import com.example.pinapple_.model.Subject;
 import com.example.pinapple_.model.Task;
 import com.example.pinapple_.screens.tasks.TasksViewModel;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AddTaskFragment extends Fragment {
@@ -43,8 +45,16 @@ public class AddTaskFragment extends Fragment {
                 android.R.id.text1,
                 getSubjects()
         );
-
         binding.subjectsList.setAdapter(adapter);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = sdf.parse(args.getDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        binding.calendarView.setDate(date != null ? date.getTime() : Calendar.getInstance().getTimeInMillis());
 
         binding.calendarView.setOnDateChangeListener((view, year, month, day) -> {
             Calendar calendar = Calendar.getInstance();
@@ -64,14 +74,11 @@ public class AddTaskFragment extends Fragment {
     }
 
     private String  dateFormat(long ms) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(ms);
     }
 
     private void createTask() {
-        Log.d("mytag", "createTask()");
-        Calendar date = Calendar.getInstance();
-        date.set(2022, 6, 1);
         Task task = new Task(
                 dateFormat(binding.calendarView.getDate()),
                 binding.subjectsList.getSelectedItem().toString(),

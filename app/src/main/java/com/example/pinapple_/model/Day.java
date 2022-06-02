@@ -1,11 +1,12 @@
 package com.example.pinapple_.model;
 
 public class Day {
-    int id;
-    public long date;
+    public String date;
+    public int countDone;
+    public int countTasks;
 
-    public Day(int id, long date) {
-        this.id = id;
+    public Day(String date) {
         this.date = date;
+
     }
 }

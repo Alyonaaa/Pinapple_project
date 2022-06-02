@@ -34,19 +34,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskAdapterHol
     public TaskAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         TaskBinding binding = TaskBinding.inflate(inflater, parent, false);
-        binding.taskIsDone.setOnCheckedChangeListener((v, value) -> {
-            Log.d("mytag", "onclick checkbox" + v.getTag(R.string.tagPosition));
+        binding.taskIsDone.setOnClickListener((v) -> {
             Object tag = v.getTag(R.string.tagPosition);
             if (tag == null) {
                 return;
             }
 
-
+            boolean value = binding.taskIsDone.isChecked();
             Integer position = (Integer) tag;
-//            Log.d("mytag", position.toString());
+            Log.d("mytag", position.toString());
             Task task = data.get(position);
             task.isDone = value;
-//            viewModel.update(task);
+            viewModel.update(task);
         });
         return new TaskAdapterHolder(binding);
     }
