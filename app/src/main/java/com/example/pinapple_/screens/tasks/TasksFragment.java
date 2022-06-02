@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -36,16 +37,18 @@ public class TasksFragment extends Fragment {
         TasksFragmentArgs args = TasksFragmentArgs.fromBundle(requireArguments());
         Toast.makeText(getContext(), args.getDate(), Toast.LENGTH_SHORT).show();
 
-        TaskAdapter adapter = new TaskAdapter();
-
         viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        TaskAdapter adapter = new TaskAdapter(viewModel);
+
         viewModel.getAllTasks().observe(getViewLifecycleOwner(), (allTasks) -> {
             Log.d("mytag", allTasks.size() + "");
             adapter.setData(allTasks);
         });
 //        adapter.setData(app.tasksService.getTasks());
         binding.taskList.setAdapter(adapter);
-        binding.addTaskButton.setOnClickListener((v) -> createTask());
+        binding.addTaskButton.setOnClickListener((v) -> {
+            Navigation.findNavController(v).navigate(TasksFragmentDirections.actionTasksFragmentToAddTaskFragment(args.getDate()));
+        });
 
         return binding.getRoot();
     }

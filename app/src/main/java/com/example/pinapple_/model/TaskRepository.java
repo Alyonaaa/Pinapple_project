@@ -16,7 +16,7 @@ public class TaskRepository {
         TaskDatabase taskDatabase = TaskDatabase.getDatabase(application);
         taskDao = taskDatabase.taskDao();
         tasks = taskDao.getAllTasks();
-        populateTextData();
+//        populateTextData();
     }
 
     public LiveData<List<Task>> getAllTasks() {
@@ -56,6 +56,12 @@ public class TaskRepository {
                     "что-то там сделать, блаблабла"
             );
             taskDao.insert(task1, task2, task3);
+        });
+    }
+
+    public void update(Task task) {
+        TaskDatabase.databaseExecutor.execute(() -> {
+           taskDao.update(task);
         });
     }
 }

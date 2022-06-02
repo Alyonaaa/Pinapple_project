@@ -1,27 +1,41 @@
 package com.example.pinapple_.screens.addtask;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.pinapple_.R;
 import com.example.pinapple_.databinding.FragmentAddTaskBinding;
 import com.example.pinapple_.model.Subject;
+import com.example.pinapple_.model.Task;
+import com.example.pinapple_.screens.tasks.TasksViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AddTaskFragment extends Fragment {
+    private FragmentAddTaskBinding binding;
+    private TasksViewModel viewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentAddTaskBinding binding = FragmentAddTaskBinding.inflate(inflater);
+        binding = FragmentAddTaskBinding.inflate(inflater);
+
+        AddTaskFragmentArgs args = AddTaskFragmentArgs.fromBundle(requireArguments());
+
+        viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
 
         ArrayAdapter adapter = new ArrayAdapter(
                 getContext(),
@@ -32,7 +46,39 @@ public class AddTaskFragment extends Fragment {
 
         binding.subjectsList.setAdapter(adapter);
 
+        binding.calendarView.setOnDateChangeListener((view, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            view.setDate(calendar.getTimeInMillis(), true, true);
+        });
+
+        binding.addButton.setOnClickListener((v) -> createTask());
+
+        binding.cancelButton.setOnClickListener((v) -> navigateUp());
+
         return binding.getRoot();
+    }
+
+    private void navigateUp() {
+        Navigation.findNavController(binding.getRoot()).navigateUp();
+    }
+
+    private String  dateFormat(long ms) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+        return dateFormat.format(ms);
+    }
+
+    private void createTask() {
+        Log.d("mytag", "createTask()");
+        Calendar date = Calendar.getInstance();
+        date.set(2022, 6, 1);
+        Task task = new Task(
+                dateFormat(binding.calendarView.getDate()),
+                binding.subjectsList.getSelectedItem().toString(),
+                binding.text.getText().toString()
+        );
+        viewModel.insert(task);
+        navigateUp();
     }
 
     private List<Subject>  getSubjects() {
