@@ -11,17 +11,28 @@ import java.util.List;
 public class TaskRepository {
     private TaskDao taskDao;
     private LiveData<List<Task>> tasks;
+    private LiveData<List<Day>> days;
 
     public TaskRepository(Application application) {
         TaskDatabase taskDatabase = TaskDatabase.getDatabase(application);
         taskDao = taskDatabase.taskDao();
         tasks = taskDao.getAllTasks();
+        days = taskDatabase.dayDao().getDays();
 //        populateTextData();
     }
 
     public LiveData<List<Task>> getAllTasks() {
         return tasks;
     }
+
+    public LiveData<List<Day>> getDays() {
+        return days;
+    }
+
+    public LiveData<List<Task>> getTasksByDate(String date) {
+        return taskDao.getTasksByDate(date);
+    }
+
 
     public void insert(Task... tasks) {
         TaskDatabase.databaseExecutor.execute(() -> {
@@ -33,28 +44,10 @@ public class TaskRepository {
         TaskDatabase.databaseExecutor.execute(() -> {
             taskDao.deleteAll();
 
-            Calendar date = Calendar.getInstance();
-            date.set(2022, 6, 3);
+            Task task1 = new Task("2022-06-03", "информатика", "закончить проект IT ШКОЛА SAMSUNG");
+            Task task2 = new Task("2022-06-03", "информатика", "закончить презентацию к проекту IT ШКОЛА SAMSUNG");
+            Task task3 = new Task("2022-06-06", "математика", "подготовится к ОГЭ");
 
-            Task task1 = new Task(
-                    new SimpleDateFormat("yyyy-mm-dd").format(date.getTimeInMillis()),
-                    "информатика",
-                    "закончить проект IT ШКОЛА SAMSUNG"
-            );
-
-            date.set(2022, 6, 1);
-            Task task2 = new Task(
-                    new SimpleDateFormat("yyyy-mm-dd").format(date.getTimeInMillis()),
-                    "информатика",
-                    "закончить презентацию к проекту IT ШКОЛА SAMSUNG"
-            );
-
-            date.set(2022, 5, 31);
-            Task task3 = new Task(
-                    new SimpleDateFormat("yyyy-mm-dd").format(date.getTimeInMillis()),
-                    "математика",
-                    "что-то там сделать, блаблабла"
-            );
             taskDao.insert(task1, task2, task3);
         });
     }
@@ -62,6 +55,13 @@ public class TaskRepository {
     public void update(Task task) {
         TaskDatabase.databaseExecutor.execute(() -> {
            taskDao.update(task);
+        });
+    }
+
+    public void setDone(Task task) {
+        TaskDatabase.databaseExecutor.execute(() -> {
+            String doneValue = task.isDone ? "1" : "0";
+            taskDao.setDone(doneValue, String.valueOf(task._id));
         });
     }
 }

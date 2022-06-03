@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,29 +23,30 @@ import com.example.pinapple_.R;
 import com.example.pinapple_.databinding.AddDayBinding;
 import com.example.pinapple_.databinding.FragmentMainBinding;
 import com.example.pinapple_.screens.main.DaysAdapter;
+import com.example.pinapple_.screens.tasks.TasksViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
 public class MainFragment extends Fragment {
+    TasksViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         App app = (App)(getContext().getApplicationContext());
+        viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
 
         FragmentMainBinding binding = FragmentMainBinding.inflate(inflater);
 
         DaysAdapter adapter = new DaysAdapter();
-        adapter.setData(app.daysService.getDays());
-        binding.dayList.setAdapter(adapter);
-
-        app.daysService.addListener(() -> {
-            adapter.notifyDataSetChanged();
+        viewModel.getDays().observe(getViewLifecycleOwner(), (data) -> {
+            adapter.setData(data);
         });
 
+        binding.dayList.setAdapter(adapter);
         binding.addTaskButton.setOnClickListener((v) -> {
             Navigation.findNavController(v).navigate(MainFragmentDirections.actionMainFragmentToAddTaskFragment(""));
         });
@@ -62,15 +64,15 @@ public class MainFragment extends Fragment {
             view.setDate(calendar.getTimeInMillis(), true, true);
         });
 
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("Add day")
-                .setView(addDayBinding.getRoot())
-                .setPositiveButton("add", (a, b) -> {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
-                    Toast.makeText(getContext(), dateFormat.format(addDayBinding.calendar.getDate()), Toast.LENGTH_SHORT).show();
-                    app.daysService.addDay(addDayBinding.calendar.getDate());
-                })
-                .create();
-        dialog.show();
+//        AlertDialog dialog = new AlertDialog.Builder(getContext())
+//                .setTitle("Add day")
+//                .setView(addDayBinding.getRoot())
+//                .setPositiveButton("add", (a, b) -> {
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+//                    Toast.makeText(getContext(), dateFormat.format(addDayBinding.calendar.getDate()), Toast.LENGTH_SHORT).show();
+//                    app.daysService.addDay(addDayBinding.calendar.getDate());
+//                })
+//                .create();
+//        dialog.show();
     }
 }

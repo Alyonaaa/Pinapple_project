@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 @Database(entities = {Task.class}, version = 2, exportSchema = false)
 public abstract class TaskDatabase extends RoomDatabase {
     abstract TaskDao taskDao();
+    abstract DayDao dayDao();
 
     private static volatile TaskDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 2;

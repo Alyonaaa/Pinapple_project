@@ -31,37 +31,22 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        App app = (App)(getContext().getApplicationContext());
+
         FragmentTasksBinding binding = FragmentTasksBinding.inflate(inflater);
 
         TasksFragmentArgs args = TasksFragmentArgs.fromBundle(requireArguments());
-        Toast.makeText(getContext(), args.getDate(), Toast.LENGTH_SHORT).show();
 
         viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         TaskAdapter adapter = new TaskAdapter(viewModel);
 
-        viewModel.getAllTasks().observe(getViewLifecycleOwner(), (allTasks) -> {
-            Log.d("mytag", allTasks.size() + "");
-            adapter.setData(allTasks);
+        viewModel.getTasksByDate(args.getDate()).observe(getViewLifecycleOwner(), (tasks) -> {
+            adapter.setData(tasks);
         });
-//        adapter.setData(app.tasksService.getTasks());
         binding.taskList.setAdapter(adapter);
         binding.addTaskButton.setOnClickListener((v) -> {
             Navigation.findNavController(v).navigate(TasksFragmentDirections.actionTasksFragmentToAddTaskFragment(args.getDate()));
         });
 
         return binding.getRoot();
-    }
-
-    private void createTask() {
-        Log.d("mytag", "createTask()");
-        Calendar date = Calendar.getInstance();
-        date.set(2022, 6, 1);
-        Task task = new Task(
-                new SimpleDateFormat("YYYY-MM-dd").format(date.getTimeInMillis()),
-                "информатика",
-                "закончить презентацию к проекту IT ШКОЛА SAMSUNG"
-        );
-        viewModel.insert(task);
     }
 }

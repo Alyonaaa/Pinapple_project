@@ -13,10 +13,10 @@ public class DaysService {
     private List<Day> days = new ArrayList<>();
     private List<DaysListener> listeners = new ArrayList<>();
 
-    {
-        Calendar calendar = Calendar.getInstance();
-        days.add(new Day(1, calendar.getTimeInMillis()));
-    }
+//    {
+//        Calendar calendar = Calendar.getInstance();
+//        days.add(new Day(calendar.getTimeInMillis()));
+//    }
 
     public List<Day> getDays() {
         return days;
@@ -27,9 +27,9 @@ public class DaysService {
         notifyAllDataChanged();
     }
 
-    public void addDay(long date) {
-        this.addDay(new Day(days.size() + 1, date));
-    }
+//    public void addDay(long date) {
+//        this.addDay(new Day(days.size() + 1, date));
+//    }
 
     public void addListener(DaysListener listener) {
         listeners.add(listener);

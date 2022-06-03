@@ -1,5 +1,6 @@
 package com.example.pinapple_.screens.main;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,10 @@ import com.example.pinapple_.R;
 import com.example.pinapple_.databinding.DayBinding;
 import com.example.pinapple_.model.Day;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysViewHolder> {
@@ -39,42 +42,38 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysViewHolder
 
         Day day = data.get(position);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(day.date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = sdf.parse(day.date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calendar.setTimeInMillis(date != null ? date.getTime() : 0);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-        String date = new SimpleDateFormat("YYYY-dd-MM").format(day.date);
         holder.binding.dayName.setText(getDayName(dayOfWeek));
-        holder.binding.dayDate.setText(date);
-        holder.binding.dayCountTasks.setText("5 дз");
+        holder.binding.dayDate.setText(day.date);
+
+        int textColor = (day.countDone < day.countTasks) ? Color.parseColor("#FF0000") : Color.parseColor("#00FF00");
+        holder.binding.dayCountTasks.setTextColor(textColor);
+        holder.binding.dayCountTasks.setText(String.format("%d/%d дз", day.countDone, day.countTasks));
+
         holder.binding.getRoot().setOnClickListener((v) -> {
             NavController controller = Navigation.findNavController(v);
-            controller.navigate(MainFragmentDirections.actionMainFragmentToTasksFragment(date));
+            controller.navigate(MainFragmentDirections.actionMainFragmentToTasksFragment(day.date));
         });
     }
 
-    private String getDayName(int num) {
-        Log.d("mytag", num + "");
-        if (num == 1){
-            return "Понедельник";
-
-        }
-        if (num == 2){
-            return "Вторник";
-        }
-        if (num == 3){
-            return "Среда";
-        }
-        if (num == 4){
-            return "Четверг";
-        }
-        if (num == 5){
-            return "Пятница";
-        }
-        if (num == 6){
-            return "Суббота";
-        }
-        if (num == 7){
-            return "Воскресенье";
+    private String getDayName(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case Calendar.SUNDAY: return "Воскресенье";
+            case Calendar.MONDAY: return "Понедельник";
+            case Calendar.TUESDAY: return "Вторник";
+            case Calendar.WEDNESDAY: return "Среда";
+            case Calendar.THURSDAY: return "Четверг";
+            case Calendar.FRIDAY: return "Пятница";
+            case Calendar.SATURDAY: return "Суббота";
         }
         return "";
     }
